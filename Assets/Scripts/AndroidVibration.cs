@@ -3,7 +3,13 @@
 /// <summary>
 /// Android Vibration wrapper class for the Android Java Object VibrationPlugin.
 /// Allows access to native android vibration calls instead of Unity's single
-/// vibration call along with other utilities such as Android's LogCat
+/// vibration call along with other utilities such as Android's LogCat.
+/// 
+/// Some descriptions of methods have just been copied from the Android developer
+/// section to keep this 1 to 1 and fully transparent
+/// https://developer.android.com/reference/android/os
+/// 
+/// Author: Ben Hoffman
 /// </summary>
 public static class AndroidVibration
 {
@@ -44,7 +50,8 @@ public static class AndroidVibration
     #endregion
 
     /// <summary>
-    /// Default constructor for this object
+    /// Static constructor for this object.
+    /// Calls the Initalize function for this object.
     /// </summary>
     static AndroidVibration()
     {
@@ -54,9 +61,13 @@ public static class AndroidVibration
     /// <summary>
     /// Initalize the current application context and plugin status.
     /// If successful then IsInitalized will be set to true.
+    /// This can be useful if you want to reset the activity or for 
+    /// debugging
     /// </summary>
     public static void Initalize()
     {
+        _isInitalized = false;
+
         // Get the current context of the application
         using (AndroidJavaClass activeClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
         {
@@ -76,6 +87,7 @@ public static class AndroidVibration
             return;
         }
 
+        // Call the inialize function of the actual .jar library
         _vibrationPlugin.Call("Initalize", _context);
 
         _isInitalized = true;
@@ -85,7 +97,7 @@ public static class AndroidVibration
     /// Determines if this phone can vibrate
     /// </summary>
     /// <returns>True if the device can vibrate</returns>
-    public static bool HanVibrator()
+    public static bool HasVibrator()
     {
         return _vibrationPlugin.Call<bool>("HasVibrator");
     }
@@ -126,6 +138,44 @@ public static class AndroidVibration
     public static void VibrateOneShot(long time, int amplitude)
     {
         _vibrationPlugin.Call("VibrateOneShot", time, amplitude);
+    }
+
+    /// <summary>
+    /// Create a waveform vibration. Waveform vibrations are a potentially 
+    /// repeating series of timing and amplitude pairs. For each pair, 
+    /// the value in the amplitude array determines the strength of the 
+    /// vibration and the value in the timing array determines how long 
+    /// it vibrates for. An amplitude of 0 implies no vibration (i.e. off),
+    /// and any pairs with a timing value of 0 will be ignored.
+    /// </summary>
+    /// <param name="pattern">The pattern of alternating on-off timings, starting with off.
+    ///                       Timing values of 0 will cause the timing / amplitude pair to 
+    ///                       be ignored.</param>
+    /// <param name="repeat">The index into the timings array at which to repeat, or -1 if
+    ///                      you you don't want to repeat.</param>
+    public static void VibrateWaveform(long[] pattern, int repeat)
+    {
+        _vibrationPlugin.Call("VibrateWaveform", pattern, repeat);
+    }
+
+    /// <summary>
+    /// Create a waveform vibration. Waveform vibrations are a potentially repeating
+    /// series of timing and amplitude pairs. For each pair, the value in the amplitude
+    /// array determines the strength of the vibration and the value in the timing array
+    /// determines how long it vibrates for. An amplitude of 0 implies no vibration 
+    /// (i.e. off), and any pairs with a timing value of 0 will be ignored.
+    /// </summary>
+    /// <param name="pattern">The timing values of the timing / amplitude pairs. 
+    ///                       Timing values of 0 will cause the pair to be ignored</param>
+    /// <param name="amplitudes">The amplitude values of the timing / amplitude pairs.
+    ///                         Amplitude values must be between 0 and 255, or equal to
+    ///                         DEFAULT_AMPLITUDE. An amplitude value of 0 implies the 
+    ///                         motor is off.></param>
+    /// <param name="repeat">The index into the timings array at which to repeat, 
+    ///                      or -1 if you you don't want to repeat.</param>
+    public static void VibrateWaveform(long[] pattern, int[] amplitudes, int repeat)
+    {
+        _vibrationPlugin.Call("VibrateWaveform", pattern, amplitudes, repeat);
     }
 
     /// <summary>
