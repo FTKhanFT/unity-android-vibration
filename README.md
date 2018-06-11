@@ -5,6 +5,7 @@ This is useful because Unity's default handheld device vibration is [somewhat la
 
 What I have done here is write a wrapper around a the [Vibrator class](https://developer.android.com/reference/android/os/Vibrator) to allow all of the normal functionality for Android developers in Unity.
 
+If you want the source code of the actual Android library that I made, then you can get it [here](https://github.com/BenjaFriend/vibration-plugin).
 
 ## Setup
 
@@ -15,6 +16,8 @@ After importing the plugin, you are going to need to give your app permissions t
 ```
 
 If you need to learn more about how manifest files work, then head to [Google's documentation on it](https://developer.android.com/guide/topics/manifest/manifest-intro).
+
+If you are using the plugin then note that it has a manifest in there already, and you need to make sure you update it with the proper information or replace it.
 
 ## Usage
 
