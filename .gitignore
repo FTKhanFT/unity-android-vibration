@@ -2,6 +2,7 @@
 [Tt]emp/
 [Bb]uild/
 [Bb]uilds/
+[Oo]bj/
 Assets/AssetStoreTools*
 
 # Visual Studio 2015 cache directory
